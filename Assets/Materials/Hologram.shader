@@ -3,8 +3,8 @@ Shader "Custom/Hologram"
     Properties
     {
         _RimColor("Rim Color", Color) = (0, 0.5, 0.5, 0.0)
-        _RimPower("Rim Power", Range(0.5,0.8)) = 3.0
-        _RimIntensity("Rim Intensity", Range (0,1)) = 3.0
+        _RimPower("Rim Power", Range(0,2)) = 3.0
+        _RimIntensity("Rim Intensity", Range (0,2)) = 3.0
     }
 
     SubShader
@@ -26,11 +26,12 @@ Shader "Custom/Hologram"
 
         float4 _RimColor;
         float _RimPower;
+        float _RimIntensity;
 
         void surf (Input IN, inout SurfaceOutput o)
         {
             half rim = 1.0 - saturate(dot(normalize(IN.viewDir),o.Normal));
-            o.Emission = _RimColor.rgb * pow(rim, _RimPower) * 10;
+            o.Emission = _RimColor.rgb * pow(rim, _RimPower * _RimIntensity) * 10;
             o.Alpha = pow(rim,_RimPower);
         }
         ENDCG
