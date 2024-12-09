@@ -7,6 +7,8 @@ Shader "Custom/Water"
         _Freq("Frequency", Range (0,5)) = 3
         _Speed("Speed",Range(0,100)) = 10
         _Amp("Amplitude", Range(0,1)) = 0.5
+        _ScrollX ("Scroll X", Range(-5, 5)) = 1
+		_ScrollY ("Scroll Y", Range(-5, 5)) = 1
     }
     SubShader
     {
@@ -24,6 +26,8 @@ Shader "Custom/Water"
         float _Freq;
         float _Speed;
         float _Amp;
+        float _ScrollX;
+        float _ScrollY;
 
         struct appdata{
             float4 vertex: POSITION;
@@ -45,8 +49,11 @@ Shader "Custom/Water"
         sampler2D _MainTex;
         void surf (Input IN, inout SurfaceOutput o)
         {
+            _ScrollX *= _Time;
+            _ScrollY *= _Time;   
+            float2 newuv = IN.uv_MainTex + float2(_ScrollX,_ScrollY);
             float4 c = tex2D(_MainTex, IN.uv_MainTex);
-            o.Albedo = c * IN.vertColor.rgb;
+            o.Albedo += tex2D (_MainTex, newuv);
         }
         ENDCG
     }
